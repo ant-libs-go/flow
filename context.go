@@ -34,7 +34,9 @@ func (this *CoreContext) AddError(err error) {
 	this.Lock()
 	defer this.UnLock()
 
-	this.errors = append(this.errors, err)
+	if err != nil {
+		this.errors = append(this.errors, err)
+	}
 }
 
 func (this *CoreContext) HasError() (r bool) {
