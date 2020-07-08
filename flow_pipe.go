@@ -17,18 +17,24 @@ func NewPipeFlow() *PipeFlow {
 	return o
 }
 
-func (this *PipeFlow) AddPloy(ploy Ploy) *PipeFlow {
-	this.CommonFlow.AddPloy(ploy)
+func (this *PipeFlow) AddPloy(ploys ...Ploy) *PipeFlow {
+	for _, ploy := range ploys {
+		this.CommonFlow.AddPloy(ploy)
+	}
 	return this
 }
 
-func (this *PipeFlow) AddPloyFunc(fn func(ctx FlowContext)) *PipeFlow {
-	this.AddPloy(PloyFunc(fn))
+func (this *PipeFlow) AddPloyFunc(fns ...func(ctx FlowContext)) *PipeFlow {
+	for _, fn := range fns {
+		this.AddPloy(PloyFunc(fn))
+	}
 	return this
 }
 
-func (this *PipeFlow) AddFlow(flow Flow) *PipeFlow {
-	this.CommonFlow.AddFlow(flow)
+func (this *PipeFlow) AddFlow(flows ...Flow) *PipeFlow {
+	for _, flow := range flows {
+		this.CommonFlow.AddFlow(flow)
+	}
 	return this
 }
 

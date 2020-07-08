@@ -88,23 +88,19 @@ type PContext struct {
 func main() {
 	mainFlow := flow.New()
 	mainFlow.AddHook(&TestHook{})
-	mainFlow.AddPloy(&TestAPloy{})
-	mainFlow.AddPloy(&TestBPloy{})
+	mainFlow.AddPloy(&TestAPloy{}, &TestBPloy{})
 
 	subFlow := flow.NewPipeFlow()
-	subFlow.AddPloy(&TestAPloy{})
-	subFlow.AddPloy(&TestBPloy{})
-	mainFlow.AddFlow(subFlow)
+	subFlow.AddPloy(&TestAPloy{}, &TestBPloy{})
 
 	parallelFlow := flow.NewParallelFlow().SetMaxProcess(2)
-	parallelFlow.AddPloy(&TestAPloy{})
-	parallelFlow.AddPloy(&TestCPloy{})
-	mainFlow.AddFlow(parallelFlow)
+	parallelFlow.AddPloy(&TestAPloy{}, &TestCPloy{})
 
 	switchFlow := flow.NewSwitchFlow().SetSwitch(&TestSwitch{})
 	switchFlow.AddPloy("test-a", &TestAPloy{})
 	switchFlow.AddPloy("test-b", &TestBPloy{})
-	mainFlow.AddFlow(switchFlow)
+
+	mainFlow.AddFlow(subFlow, parallelFlow, switchFlow)
 
 	ctx := &PContext{}
 	mainFlow.Run(ctx)

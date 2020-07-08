@@ -42,21 +42,21 @@ type PContext struct {
 }
 
 // PipeFlow 的用法，顺序运行填充user和验证user的ploy
-userFlow := flow.NewPipeFlow().AddPloy(new(FillingUser)).AddPloy(new(UserAntiSpam))
-orderFlow := flow.NewPipeFlow().AddPloy(new(FillingOrder).AddPloy(new(OrderAntiSpam))
+userFlow := flow.NewPipeFlow().AddPloy(new(FillingUser), new(UserAntiSpam))
+orderFlow := flow.NewPipeFlow().AddPloy(new(FillingOrder), new(OrderAntiSpam))
 
 // SwitchFlow 的用法，根据OrderProductTypeSwitch来判断后续运行的flow
 buyFlow := flow.NewSwitchFlow().
 	SetSwitch(new(OrderProductTypeSwitch)).
 	// Settle Ploy 的复用
-	AddFlow("CAR", flow.NewPipeFlow().AddPloy(new(BuyCar)).AddPloy(new(Settle))).
-	AddFlow("COMPUTER", flow.NewPipeFlow().AddPloy(new(BuyCar)).AddPloy(new(Settle))).
-	AddFlow("SNACKS", flow.NewPipeFlow().AddPloy(new(BuySnacks)).AddPloy(new(Settle)))
+	AddFlow("CAR", flow.NewPipeFlow().AddPloy(new(BuyCar), new(Settle))).
+	AddFlow("COMPUTER", flow.NewPipeFlow().AddPloy(new(BuyCar), new(Settle))).
+	AddFlow("SNACKS", flow.NewPipeFlow().AddPloy(new(BuySnacks), new(Settle)))
 
 // 主flow，user和order并行获取和验证
 // 根据产品类型运行不同的购买逻辑以及结算逻辑
 mainFlow := flow.New().
-	AddFlow(flow.NewParallelFlow().AddFlow(userFlow).AddFlow(orderFlow)).
+	AddFlow(flow.NewParallelFlow().AddFlow(userFlow, orderFlow)).
 	AddFlow(buyFlow)
 
 ctx := &PContext{}

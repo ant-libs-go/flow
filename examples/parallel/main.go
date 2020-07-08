@@ -53,8 +53,7 @@ func main() {
 	mainFlow := flow.New()
 
 	parallelFlow := flow.NewParallelFlow().SetMaxProcess(2)
-	parallelFlow.AddPloy(&TestAPloy{})
-	parallelFlow.AddPloy(&TestBPloy{})
+	parallelFlow.AddPloy(&TestAPloy{}, &TestBPloy{})
 
 	mainFlow.AddFlow(parallelFlow)
 

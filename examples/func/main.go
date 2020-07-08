@@ -57,8 +57,7 @@ type PContext struct {
 
 func main() {
 	mainFlow := flow.New()
-	mainFlow.AddPloy(&TestAPloy{})
-	mainFlow.AddPloy(&TestBPloy{})
+	mainFlow.AddPloy(&TestAPloy{}, &TestBPloy{})
 	mainFlow.AddPloyFunc(func(c flow.FlowContext) {
 		ctx := c.(*PContext)
 

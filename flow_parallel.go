@@ -23,18 +23,24 @@ func NewParallelFlow() *ParallelFlow {
 	return o
 }
 
-func (this *ParallelFlow) AddPloy(ploy Ploy) *ParallelFlow {
-	this.CommonFlow.AddPloy(ploy)
+func (this *ParallelFlow) AddPloy(ploys ...Ploy) *ParallelFlow {
+	for _, ploy := range ploys {
+		this.CommonFlow.AddPloy(ploy)
+	}
 	return this
 }
 
-func (this *ParallelFlow) AddPloyFunc(fn func(ctx FlowContext)) *ParallelFlow {
-	this.AddPloy(PloyFunc(fn))
+func (this *ParallelFlow) AddPloyFunc(fns ...func(ctx FlowContext)) *ParallelFlow {
+	for _, fn := range fns {
+		this.AddPloy(PloyFunc(fn))
+	}
 	return this
 }
 
-func (this *ParallelFlow) AddFlow(flow Flow) *ParallelFlow {
-	this.CommonFlow.AddFlow(flow)
+func (this *ParallelFlow) AddFlow(flows ...Flow) *ParallelFlow {
+	for _, flow := range flows {
+		this.CommonFlow.AddFlow(flow)
+	}
 	return this
 }
 
