@@ -20,30 +20,36 @@ func (this SwitchFunc) Run(ctx FlowContext) (r string, err error) { return this(
 type SwitchFlow struct {
 	*CommonFlow
 	flowSwitch Switch
-	runnables  map[string]Runnable
+	runnables  map[string][]Runnable
 }
 
 func NewSwitchFlow() *SwitchFlow {
 	o := &SwitchFlow{}
 	o.CommonFlow = NewCommonFlow()
-	o.runnables = make(map[string]Runnable)
+	o.runnables = make(map[string][]Runnable)
 	return o
 }
 
-func (this *SwitchFlow) AddPloy(cond string, ploy Ploy) *SwitchFlow {
-	this.runnables[cond] = ploy
-	this.CommonFlow.AddPloy(ploy)
+func (this *SwitchFlow) AddPloy(cond string, ploys ...Ploy) *SwitchFlow {
+	for _, ploy := range ploys {
+		this.runnables[cond] = append(this.runnables[cond], ploy)
+		this.CommonFlow.AddPloy(ploy)
+	}
 	return this
 }
 
-func (this *SwitchFlow) AddPloyFunc(cond string, fn func(ctx FlowContext)) *SwitchFlow {
-	this.AddPloy(cond, PloyFunc(fn))
+func (this *SwitchFlow) AddPloyFunc(cond string, fns ...func(ctx FlowContext)) *SwitchFlow {
+	for _, fn := range fns {
+		this.AddPloy(cond, PloyFunc(fn))
+	}
 	return this
 }
 
-func (this *SwitchFlow) AddFlow(cond string, flow Flow) *SwitchFlow {
-	this.runnables[cond] = flow
-	this.CommonFlow.AddFlow(flow)
+func (this *SwitchFlow) AddFlow(cond string, flows ...Flow) *SwitchFlow {
+	for _, flow := range flows {
+		this.runnables[cond] = append(this.runnables[cond], flow)
+		this.CommonFlow.AddFlow(flow)
+	}
 	return this
 }
 
@@ -77,15 +83,17 @@ func (this *SwitchFlow) Run(ctx FlowContext) {
 		return
 	}
 
-	runnable, exists := this.runnables[cond]
-	if !exists {
+	runnables, ok := this.runnables[cond]
+	if !ok {
 		ctx.AddError(fmt.Errorf("no such flow: %s", cond))
 		return
 	}
 
-	this.hookMgr.before(ctx, runnable)
-	runnable.Run(ctx)
-	this.hookMgr.after(ctx, runnable)
+	for _, runnable := range runnables {
+		this.hookMgr.before(ctx, runnable)
+		runnable.Run(ctx)
+		this.hookMgr.after(ctx, runnable)
+	}
 
 	return
 }
