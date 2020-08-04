@@ -68,10 +68,6 @@ func (this *SwitchFlow) SetSwitchFunc(fn func(ctx FlowContext) (r string, err er
 }
 
 func (this *SwitchFlow) Run(ctx FlowContext) {
-	if ctx.HasError() {
-		return
-	}
-
 	if this.flowSwitch == nil {
 		ctx.AddError(fmt.Errorf("switch flow must set switch first"))
 		return
@@ -90,6 +86,9 @@ func (this *SwitchFlow) Run(ctx FlowContext) {
 	}
 
 	for _, runnable := range runnables {
+		if ctx.HasError() {
+			return
+		}
 		this.hookMgr.before(ctx, runnable)
 		runnable.Run(ctx)
 		this.hookMgr.after(ctx, runnable)
