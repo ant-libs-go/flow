@@ -44,11 +44,10 @@ func (this *PipeFlow) AddHook(hooks ...Hook) *PipeFlow {
 }
 
 func (this *PipeFlow) Run(ctx FlowContext) {
-	if ctx.HasError() {
-		return
-	}
-
 	for _, runnable := range this.runnables {
+		if ctx.HasError() == false {
+			return
+		}
 		this.hookMgr.before(ctx, runnable)
 		runnable.Run(ctx)
 		this.hookMgr.after(ctx, runnable)
