@@ -88,6 +88,4 @@ func (this *ParallelFlow) Run(ctx FlowContext) {
 		go func() { defer wg.Done(); fn(ctx, runnableChan) }()
 	}
 	wg.Wait()
-
-	return
 }

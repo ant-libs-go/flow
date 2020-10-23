@@ -52,6 +52,4 @@ func (this *PipeFlow) Run(ctx FlowContext) {
 		runnable.Run(ctx)
 		this.hookMgr.after(ctx, runnable)
 	}
-
-	return
 }
