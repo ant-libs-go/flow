@@ -103,6 +103,4 @@ func (this *GotoFlow) Run(ctx FlowContext) {
 			this.hookMgr.after(ctx, runnable)
 		}
 	}
-
-	return
 }
