@@ -81,6 +81,9 @@ func (this *SwitchFlow) Run(ctx FlowContext) {
 
 	runnables, ok := this.runnables[cond]
 	if !ok {
+		runnables, ok = this.runnables["default"]
+	}
+	if !ok {
 		ctx.AddError(fmt.Errorf("no such flow: %s", cond))
 		return
 	}
