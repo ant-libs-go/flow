@@ -9,7 +9,7 @@ package flow
 
 import "fmt"
 
-const DEFAULT_SWITCH_RUNNABLES = "default_switch_runnable"
+const DEFAULT_SWITCH_RUNNABLE = "default_switch_runnable"
 
 type Switch interface {
 	Run(ctx FlowContext) (r string, err error)
