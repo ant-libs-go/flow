@@ -9,6 +9,8 @@ package flow
 
 import "fmt"
 
+const DEFAULT_SWITCH_RUNNABLES = "default_switch_runnable"
+
 type Switch interface {
 	Run(ctx FlowContext) (r string, err error)
 }
@@ -81,7 +83,7 @@ func (this *SwitchFlow) Run(ctx FlowContext) {
 
 	runnables, ok := this.runnables[cond]
 	if !ok {
-		runnables, ok = this.runnables["default"]
+		runnables, ok = this.runnables[DEFAULT_SWITCH_RUNNABLES]
 	}
 	if !ok {
 		ctx.AddError(fmt.Errorf("no such flow: %s", cond))
