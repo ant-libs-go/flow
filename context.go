@@ -18,6 +18,7 @@ type FlowContext interface {
 	HasError() (r bool)
 	GetError() (r error)
 	GetErrors() (r []error)
+	CleanErrors()
 }
 
 type CoreContext struct {
@@ -64,4 +65,11 @@ func (this *CoreContext) GetErrors() (r []error) {
 	defer this.RUnLock()
 
 	return this.errors
+}
+
+func (this *CoreContext) CleanErrors() {
+	this.Lock()
+	defer this.UnLock()
+
+	this.errors = []error{}
 }
