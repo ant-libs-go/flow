@@ -7,8 +7,7 @@
 
 package flow
 
-func New(hooks ...Hook) *PipeFlow {
+func New() *PipeFlow {
 	o := NewPipeFlow()
-	o.AddHook(hooks...)
 	return o
 }
