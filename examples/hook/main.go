@@ -80,6 +80,22 @@ func (this *TestHook) After(c flow.FlowContext, runnable flow.Runnable) {
 	fmt.Println("after", reflect.TypeOf(runnable))
 }
 
+type TestHook2 struct {
+	flow.Hook
+}
+
+func (this *TestHook2) Before(c flow.FlowContext, runnable flow.Runnable) {
+	//ctx := c.(*PContext)
+
+	fmt.Println("before2", reflect.TypeOf(runnable))
+}
+
+func (this *TestHook2) After(c flow.FlowContext, runnable flow.Runnable) {
+	//ctx := c.(*PContext)
+
+	fmt.Println("after2", reflect.TypeOf(runnable))
+}
+
 type PContext struct {
 	flow.CoreContext
 	Count int
@@ -99,6 +115,7 @@ func main() {
 	switchFlow := flow.NewSwitchFlow().SetSwitch(&TestSwitch{})
 	switchFlow.AddPloy("test-a", &TestAPloy{})
 	switchFlow.AddPloy("test-b", &TestBPloy{})
+	switchFlow.AddHook(&TestHook2{})
 
 	mainFlow.AddFlow(subFlow, parallelFlow, switchFlow)
 

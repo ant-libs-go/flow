@@ -29,12 +29,18 @@ func (this *hookMgr) add(hooks []Hook) {
 }
 
 func (this *hookMgr) before(ctx FlowContext, runable Runnable) {
+	if this == nil {
+		return
+	}
 	for _, hook := range this.hooks {
 		hook.Before(ctx, runable)
 	}
 }
 
 func (this *hookMgr) after(ctx FlowContext, runable Runnable) {
+	if this == nil {
+		return
+	}
 	for _, hook := range this.hooks {
 		hook.After(ctx, runable)
 	}

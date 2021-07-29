@@ -9,7 +9,6 @@ package flow
 
 type Flow interface {
 	Runnable
-	setHookMgr(mgr *hookMgr)
 }
 
 type CommonFlow struct {
@@ -28,26 +27,15 @@ func (this *CommonFlow) AddPloy(ploy Ploy) {
 }
 
 func (this *CommonFlow) AddFlow(flow Flow) {
-	flow.setHookMgr(this.hookMgr)
 	this.runnables = append(this.runnables, flow)
 }
 
 func (this *CommonFlow) AddHook(hooks ...Hook) {
-	if this.hookMgr == nil {
-		this.setHookMgr(newHookMgr())
-	}
-	this.hookMgr.add(hooks)
-}
-
-func (this *CommonFlow) setHookMgr(mgr *hookMgr) {
-	if this.hookMgr != nil {
+	if len(hooks) == 0 {
 		return
 	}
-
-	this.hookMgr = mgr
-	for _, runnable := range this.runnables {
-		if v, ok := runnable.(Flow); ok {
-			v.setHookMgr(this.hookMgr)
-		}
+	if this.hookMgr == nil {
+		this.hookMgr = newHookMgr()
 	}
+	this.hookMgr.add(hooks)
 }
