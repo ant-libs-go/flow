@@ -1,15 +1,27 @@
-# flow
+# Flow
+
 代码解耦神器，支持并行、串行、分支解耦，增强代码复用性
 
-# 功能
- - 将你的业务逻辑定义成独立的ploy，通过ParallelFlow、PipeFlow、SwitchFlow将业务逻辑进行串联
- - ParallelFlow: 并行逻辑
- - PipeFlow：顺序串行逻辑
- - SwitchFlow：分支逻辑
+[![License](https://img.shields.io/:license-apache%202-blue.svg)](https://opensource.org/licenses/Apache-2.0)
+[![GoDoc](https://godoc.org/github.com/ant-libs-go/flow?status.png)](http://godoc.org/github.com/ant-libs-go/flow)
+[![Go Report Card](https://goreportcard.com/badge/github.com/ant-libs-go/flow)](https://goreportcard.com/report/github.com/ant-libs-go/flow)
 
-# 快速上手
- - 这里通过一个购物场景介绍flow该如何使用。由于场景是强行怼的，所以请不要在意场景是否合理以及异常处理。
- - 更多更详细的用法参考examples
+# 特性
+
+* 将你的业务逻辑定义成独立的ploy，通过ParallelFlow、PipeFlow、SwitchFlow将业务逻辑进行串联
+* ParallelFlow: 并行逻辑
+* PipeFlow：顺序串行逻辑
+* SwitchFlow：分支逻辑
+
+## 安装
+
+	go get github.com/ant-libs-go/flow
+
+# 快速开始
+
+* 这里通过一个购物场景介绍flow该如何使用。由于场景是强行怼的，所以请不要在意场景是否合理以及异常处理。
+* 更多更详细的用法参考examples
+
 ```golang
 // 常规写法
 func Buy(userId int32, orderId int32) (r error) {
