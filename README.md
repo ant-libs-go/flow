@@ -74,3 +74,8 @@ mainFlow := flow.New().
 ctx := &PContext{}
 mainFlow.Run(ctx)
 ```
+
+# 高级用法
+
+* 使用 https://github.com/ant-libs-go/pool 对`PContext`进行复用
+
