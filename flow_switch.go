@@ -92,7 +92,7 @@ func (this *SwitchFlow) Run(ctx FlowContext) {
 
 	for _, runnable := range runnables {
 		if ctx.HasError() {
-			return
+			break
 		}
 		this.hookMgr.before(ctx, runnable)
 		runnable.Run(ctx)

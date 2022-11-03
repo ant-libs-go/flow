@@ -12,6 +12,8 @@
 * ParallelFlow: 并行逻辑
 * PipeFlow：顺序串行逻辑
 * SwitchFlow：分支逻辑
+* GotoFlow：Goto逻辑，根据条件在多个 ploy 中进行任意跳转，直到返回 BreakError
+* GoroutineFlow：Goroutine并行逻辑，根据指定并发数运行指定的 ploy
 
 ## 安装
 
@@ -24,24 +26,24 @@
 
 ```golang
 // 常规写法
-func Buy(userId int32, orderId int32) (r error) {
+func Buy(userId int32, productId int32) (r error) {
 	user, _ := model.GetUserById(userId)
-	order, _ := model.GetOrderById(orderId)
+	product, _ := model.GetProductById(productId)
 
 	if reason := userAntiSpam(user) ; reason != nil {
 		return fmt.Errorf("user exception, %s", reason)
 	}
-	if reason := orderAntiSpam(order); reason != nil {
-		return fmt.Errorf("order exception, %s", reason)
+	if reason := productAntiSpam(product); reason != nil {
+		return fmt.Errorf("product exception, %s", reason)
 	}
 
-	switch order.ProductType {
+	switch product.Type {
 	case "CAR":
-		r = Settle(user, BuyCar(user, order))
+		r = Settle(user, BuyCar(user, product))
 	case "COMPUTER":
-		r = Settle(user, BuyComputer(user, order))
+		r = Settle(user, BuyComputer(user, product))
 	case "SNACKS":
-		r = Settle(user, BuySnacks(user, order))
+		r = Settle(user, BuySnacks(user, product))
 	}
 	return
 }
@@ -50,25 +52,25 @@ func Buy(userId int32, orderId int32) (r error) {
 type PContext struct {
 	flow.CoreContext
 	User *User
-	Order *Order
+	Product *Product
 }
 
 // PipeFlow 的用法，顺序运行填充user和验证user的ploy
 userFlow := flow.NewPipeFlow().AddPloy(new(FillingUser), new(UserAntiSpam))
-orderFlow := flow.NewPipeFlow().AddPloy(new(FillingOrder), new(OrderAntiSpam))
+productFlow := flow.NewPipeFlow().AddPloy(new(FillingProduct), new(ProductAntiSpam))
 
-// SwitchFlow 的用法，根据OrderProductTypeSwitch来判断后续运行的flow
+// SwitchFlow 的用法，根据ProductTypeSwitch来判断后续运行的flow
 buyFlow := flow.NewSwitchFlow().
-	SetSwitch(new(OrderProductTypeSwitch)).
+	SetSwitch(new(ProductTypeSwitch)).
 	// Settle Ploy 的复用
 	AddFlow("CAR", flow.NewPipeFlow().AddPloy(new(BuyCar), new(Settle))).
-	AddFlow("COMPUTER", flow.NewPipeFlow().AddPloy(new(BuyCar), new(Settle))).
+	AddFlow("COMPUTER", flow.NewPipeFlow().AddPloy(new(BuyComputer), new(Settle))).
 	AddFlow("SNACKS", flow.NewPipeFlow().AddPloy(new(BuySnacks), new(Settle)))
 
-// 主flow，user和order并行获取和验证
+// 主flow，user和product并行获取和验证
 // 根据产品类型运行不同的购买逻辑以及结算逻辑
 mainFlow := flow.New().
-	AddFlow(flow.NewParallelFlow().AddFlow(userFlow, orderFlow)).
+	AddFlow(flow.NewParallelFlow().AddFlow(userFlow, productFlow)).
 	AddFlow(buyFlow)
 
 ctx := &PContext{}

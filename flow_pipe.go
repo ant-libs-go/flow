@@ -46,7 +46,7 @@ func (this *PipeFlow) AddHook(hooks ...Hook) *PipeFlow {
 func (this *PipeFlow) Run(ctx FlowContext) {
 	for _, runnable := range this.runnables {
 		if ctx.HasError() {
-			return
+			break
 		}
 		this.hookMgr.before(ctx, runnable)
 		runnable.Run(ctx)
